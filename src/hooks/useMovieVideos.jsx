@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
-//for fetching extra details for modal based on movieID
-export default function useMovieDetails(movieId) {
-  const [movieDetails, setMovieDetails] = useState(null);
-  const [detailsLoading, setDetailsLoading] = useState(false);
-  const [detailsError, setDetailsError] = useState(null);
+
+export default function useMovieVideos(movieId) {
+  const [videos, setVideos] = useState([]);
+  const [videosLoading, setVideosLoading] = useState(false);
+  const [videosError, setVideosError] = useState(null);
 
   const token = import.meta.env.VITE_TMDB_TOKEN;
 
   useEffect(() => {
     if (!movieId) {
-      setMovieDetails(null);
+      setVideos([]);
       return;
     }
 
     let cancelled = false;
 
-    const fetchMovieDetails = async () => {
-      setDetailsLoading(true);
-      setDetailsError(null);
+    const fetchVideos = async () => {
+      setVideosLoading(true);
+      setVideosError(null);
 
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+          `https://api.themoviedb.org/3/movie/${movieId}/videos?language=en-US`,
           {
             method: "GET",
             headers: {
@@ -38,24 +38,24 @@ export default function useMovieDetails(movieId) {
         const res = await response.json();
 
         if (cancelled) return;
-        setMovieDetails(res);
+        setVideos(res.results || []);
       } catch (error) {
         if (!cancelled) {
-          setDetailsError(error);
+          setVideosError(error);
         }
       } finally {
         if (!cancelled) {
-          setDetailsLoading(false);
+          setVideosLoading(false);
         }
       }
     };
 
-    fetchMovieDetails();
+    fetchVideos();
 
     return () => {
       cancelled = true;
     };
   }, [movieId, token]);
 
-  return { movieDetails, detailsLoading, detailsError };
+  return { videos, videosLoading, videosError };
 }

@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { MovieContext } from "../Context/MovieContext";
 import useMovieDetails from "../hooks/useMovieDetails";
+import useMovieVideos from "../hooks/useMovieVideos";
 import styles from "./MovieModal.module.css";
 
 export default function MovieModal() {
@@ -8,6 +9,24 @@ export default function MovieModal() {
 
   const movieId = selectedMovie?.id;
   const { movieDetails, detailsLoading, detailsError } = useMovieDetails(movieId);
+  const { videos, videosLoading, videosError } = useMovieVideos(movieId);
+
+  const trailer = useMemo(() => {
+    if (!videos.length) return null;
+
+    return (
+      videos.find(
+        (video) =>
+          video.site === "YouTube" &&
+          video.type === "Trailer" &&
+          video.official
+      ) ||
+      videos.find(
+        (video) => video.site === "YouTube" && video.type === "Trailer"
+      ) ||
+      videos.find((video) => video.site === "YouTube")
+    );
+  }, [videos]);
 
   if (!selectedMovie) return null;
 
@@ -89,6 +108,32 @@ export default function MovieModal() {
               {overview || "No overview available."}
             </p>
           </div>
+        </div>
+
+        <div className={styles.trailerSection}>
+          <h3 className={styles.sectionTitle}>Trailer</h3>
+
+          {videosLoading && <p className={styles.meta}>Loading trailer...</p>}
+          {videosError && (
+            <p className={styles.meta}>
+              Could not load trailer: {String(videosError.message || videosError)}
+            </p>
+          )}
+
+          {trailer ? (
+            <div className={styles.videoWrapper}>
+              <iframe
+                src={`https://www.youtube.com/embed/${trailer.key}`}
+                title={`${title} trailer`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            !videosLoading && (
+              <p className={styles.meta}>No trailer available for this movie.</p>
+            )
+          )}
         </div>
       </div>
     </div>
