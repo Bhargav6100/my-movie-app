@@ -138,3 +138,29 @@
   color: #ff3d3d;
   font-weight: 600;
 }
+
+.watchlistBtn {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #7c5cff;
+  background: transparent;
+  color: #b9aaff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.watchlistBtn:hover {
+  background: #7c5cff;
+  color: white;
+}
+
+.watchlistBadge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #b9aaff;
+  font-weight: 600;
+}

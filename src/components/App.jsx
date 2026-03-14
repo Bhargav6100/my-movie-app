@@ -1,16 +1,19 @@
 import "./App.css";
 import { MovieContext } from "../Context/MovieContext";
 import { FavouriteContext } from "../Context/FavouriteContext";
+import { WatchlistContext } from "../Context/WatchListContext";
 import { useContext } from "react";
 import Movie from "./Movie";
 import Pagination from "./Pagination";
 import Header from "./Header";
 import Favourites from "./Favourites";
+import Watchlist from "./WatchList";
 import MovieModal from "./MovieModal";
 
 function App() {
   const { isLoading, isError, displayedMovies } = useContext(MovieContext);
   const { displayFavMovies, favoriteMovies } = useContext(FavouriteContext);
+  const { displayWatchlistMovies, watchlistMovies } = useContext(WatchlistContext);
 
   return (
     <div>
@@ -22,7 +25,7 @@ function App() {
       )}
 
       <div className="moviesGrid">
-        {!displayFavMovies &&
+        {!displayFavMovies && !displayWatchlistMovies &&
           displayedMovies.map((d) => (
            <Movie
           key={d.id}
@@ -33,15 +36,17 @@ function App() {
           releaseDate={d.release_date}
           rating={d.vote_average}
           language={d.original_language}
-          isFavorite={favoriteMovies.some((movie) => movie.id === d.id)}/>
+          isFavorite={favoriteMovies.some((movie) => movie.id === d.id)}
+          isInWatchlist={watchlistMovies.some((movie) => movie.id === d.id)}/>
           ))}
       </div>
 
       <div className="moviesGrid">
         {displayFavMovies && <Favourites />}
+        {displayWatchlistMovies && <Watchlist />}
       </div>
 
-      {!displayFavMovies && <Pagination />}
+      {!displayFavMovies && !displayWatchlistMovies && <Pagination />}
 
       <MovieModal />
     </div>

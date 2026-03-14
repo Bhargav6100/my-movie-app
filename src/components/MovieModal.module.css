@@ -103,12 +103,12 @@
 .similarSection {
   margin-top: 28px;
 }
-
 .sectionTitle {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   font-size: 20px;
   color: #fff;
   font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .videoWrapper {
@@ -132,18 +132,23 @@
 /* CAST */
 
 .castGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  display: flex;
   gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
 }
 
+
 .castCard {
+  flex: 0 0 140px;
   background: #1a1a1a;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 
 .castCard:hover {
   transform: translateY(-4px);
@@ -181,16 +186,35 @@
   color: #aaa;
   line-height: 1.4;
 }
+.castGrid::-webkit-scrollbar,
+.similarGrid::-webkit-scrollbar {
+  height: 8px;
+}
 
+.castGrid::-webkit-scrollbar-thumb,
+.similarGrid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.castGrid::-webkit-scrollbar-track,
+.similarGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+  
 /* SIMILAR MOVIES */
 
 .similarGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  display: flex;
   gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
 }
 
+
 .similarCard {
+  flex: 0 0 150px;
   background: transparent;
   border: none;
   padding: 0;
@@ -198,6 +222,7 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 
 .similarCard:hover {
   transform: translateY(-4px);
@@ -256,9 +281,5 @@
   .poster {
     max-height: 420px;
   }
-
-  .castGrid,
-  .similarGrid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
 }
+

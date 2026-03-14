@@ -41,7 +41,7 @@ export default function useMovies(page, searchQuery = "") {
         if (cancelled) return;
 
         setData(res.results || []);
-        setTotalPage(res.total_pages || 0);
+       setTotalPage(Math.min(res.total_pages || 0, 500));
       } catch (error) {
         if (!cancelled) {
           setIsError(error);
