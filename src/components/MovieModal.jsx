@@ -2,14 +2,20 @@ import { useContext, useMemo } from "react";
 import { MovieContext } from "../Context/MovieContext";
 import useMovieDetails from "../hooks/useMovieDetails";
 import useMovieVideos from "../hooks/useMovieVideos";
+import useMovieCredits from "../hooks/useMovieCredits";
+import useSimilarMovies from "../hooks/useSimilarMovies";
 import styles from "./MovieModal.module.css";
 
 export default function MovieModal() {
-  const { selectedMovie, closeMovieDetails } = useContext(MovieContext);
+  const { selectedMovie, closeMovieDetails, openMovieDetails } =
+    useContext(MovieContext);
 
   const movieId = selectedMovie?.id;
+
   const { movieDetails, detailsLoading, detailsError } = useMovieDetails(movieId);
   const { videos, videosLoading, videosError } = useMovieVideos(movieId);
+  const { credits, creditsLoading, creditsError } = useMovieCredits(movieId);
+  const { similarMovies, similarLoading, similarError } = useSimilarMovies(movieId);
 
   const trailer = useMemo(() => {
     if (!videos.length) return null;
@@ -40,6 +46,8 @@ export default function MovieModal() {
   const runtime = movieDetails?.runtime;
   const tagline = movieDetails?.tagline;
   const genres = movieDetails?.genres || [];
+  const topCast = credits?.cast?.slice(0, 8) || [];
+  const relatedMovies = similarMovies.slice(0, 8);
 
   return (
     <div className={styles.backdrop} onClick={closeMovieDetails}>
@@ -133,6 +141,89 @@ export default function MovieModal() {
             !videosLoading && (
               <p className={styles.meta}>No trailer available for this movie.</p>
             )
+          )}
+        </div>
+
+        <div className={styles.castSection}>
+          <h3 className={styles.sectionTitle}>Top Cast</h3>
+
+          {creditsLoading && <p className={styles.meta}>Loading cast...</p>}
+          {creditsError && (
+            <p className={styles.meta}>
+              Could not load cast: {String(creditsError.message || creditsError)}
+            </p>
+          )}
+
+          {!creditsLoading && topCast.length > 0 && (
+            <div className={styles.castGrid}>
+              {topCast.map((person) => (
+                <div key={person.cast_id || person.credit_id || person.id} className={styles.castCard}>
+                  {person.profile_path ? (
+                    <img
+                      className={styles.castImage}
+                      src={`https://image.tmdb.org/t/p/w185${person.profile_path}`}
+                      alt={person.name}
+                    />
+                  ) : (
+                    <div className={styles.castPlaceholder}>No Image</div>
+                  )}
+                  <p className={styles.castName}>{person.name}</p>
+                  <p className={styles.castCharacter}>{person.character}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!creditsLoading && topCast.length === 0 && (
+            <p className={styles.meta}>No cast information available.</p>
+          )}
+        </div>
+
+        <div className={styles.similarSection}>
+          <h3 className={styles.sectionTitle}>Similar Movies</h3>
+
+          {similarLoading && <p className={styles.meta}>Loading similar movies...</p>}
+          {similarError && (
+            <p className={styles.meta}>
+              Could not load similar movies: {String(similarError.message || similarError)}
+            </p>
+          )}
+
+          {!similarLoading && relatedMovies.length > 0 && (
+            <div className={styles.similarGrid}>
+              {relatedMovies.map((movie) => (
+                <button
+                  key={movie.id}
+                  className={styles.similarCard}
+                  onClick={() =>
+                    openMovieDetails({
+                      id: movie.id,
+                      title: movie.title,
+                      poster_path: movie.poster_path,
+                      overview: movie.overview,
+                      release_date: movie.release_date,
+                      vote_average: movie.vote_average,
+                      original_language: movie.original_language,
+                    })
+                  }
+                >
+                  {movie.poster_path ? (
+                    <img
+                      className={styles.similarPoster}
+                      src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`}
+                      alt={movie.title}
+                    />
+                  ) : (
+                    <div className={styles.similarPlaceholder}>No Poster</div>
+                  )}
+                  <p className={styles.similarTitle}>{movie.title}</p>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {!similarLoading && relatedMovies.length === 0 && (
+            <p className={styles.meta}>No similar movies found.</p>
           )}
         </div>
       </div>
