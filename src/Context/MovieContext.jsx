@@ -11,6 +11,7 @@ export const MovieProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [sortOption, setSortOption] = useState("popularity");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,10 +37,43 @@ export const MovieProvider = ({ children }) => {
     return map;
   }, [data]);
 
-  const displayedMovies =
+  const genreFilteredMovies =
     selectedGenre === "all"
       ? data
       : moviesByGenre[Number(selectedGenre)] ?? [];
+      
+  const displayedMovies = useMemo(() => {
+    const movies = [...genreFilteredMovies];
+
+    switch (sortOption) {
+      case "rating":
+        return movies.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+
+      case "newest":
+        return movies.sort(
+          (a, b) =>
+            new Date(b.release_date || 0).getTime() -
+            new Date(a.release_date || 0).getTime()
+        );
+
+      case "oldest":
+        return movies.sort(
+          (a, b) =>
+            new Date(a.release_date || 0).getTime() -
+            new Date(b.release_date || 0).getTime()
+        );
+
+      case "title-asc":
+        return movies.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+
+      case "title-desc":
+        return movies.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+
+      case "popularity":
+      default:
+        return movies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    }
+  }, [genreFilteredMovies, sortOption]);
 
   const chooseGenre = (e) => {
     setSelectedGenre(e.target.value);
@@ -55,6 +89,10 @@ export const MovieProvider = ({ children }) => {
     setSearchQuery("");
     setDebouncedSearchQuery("");
     setPage(1);
+  };
+
+   const changeSortOption = (e) => {
+    setSortOption(e.target.value);
   };
 
   const openMovieDetails = (movie) => {
@@ -78,12 +116,14 @@ export const MovieProvider = ({ children }) => {
       chooseGenre,
       handleSearchChange,
       clearSearch,
+      changeSortOption,
       openMovieDetails,
       closeMovieDetails,
     }),
     [
       selectedGenre,
       searchQuery,
+      sortOption,
       data,
       isLoading,
       isError,
