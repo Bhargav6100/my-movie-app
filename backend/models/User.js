@@ -1,5 +1,21 @@
 const mongoose = require("mongoose");
 
+const savedMovieSchema = new mongoose.Schema(
+  {
+    movieId: {
+      type: Number,
+      required: true,
+    },
+    title: String,
+    poster_path: String,
+    backdrop_path: String,
+    vote_average: Number,
+    release_date: String,
+    overview: String,
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -17,6 +33,14 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    favorites: {
+      type: [savedMovieSchema],
+      default: [],
+    },
+    watchlist: {
+      type: [savedMovieSchema],
+      default: [],
     },
   },
   {
