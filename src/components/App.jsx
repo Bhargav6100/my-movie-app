@@ -9,6 +9,7 @@ import Header from "./Header";
 import Favourites from "./Favourites";
 import Watchlist from "./WatchList";
 import MovieModal from "./MovieModal";
+import Footer from "./Footer";
 
 function App() {
   const { isLoading, isError, displayedMovies } = useContext(MovieContext);
@@ -49,6 +50,7 @@ function App() {
       {!displayFavMovies && !displayWatchlistMovies && <Pagination />}
 
       <MovieModal />
+      <Footer/>
     </div>
   );
 }

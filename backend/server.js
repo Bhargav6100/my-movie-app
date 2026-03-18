@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userMovieRoutes = require("./routes/userMovieRoutes");
-
+const tmdbRoutes = require("./routes/tmdbRoutes");
 dotenv.config();
 connectDB();
 
@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 // auth routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userMovieRoutes);
+app.use("/api/tmdb", tmdbRoutes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

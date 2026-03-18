@@ -5,8 +5,6 @@ export default function useMovieCredits(movieId) {
   const [creditsLoading, setCreditsLoading] = useState(false);
   const [creditsError, setCreditsError] = useState(null);
 
-  const token = import.meta.env.VITE_TMDB_TOKEN;
-
   useEffect(() => {
     if (!movieId) {
       setCredits(null);
@@ -21,14 +19,7 @@ export default function useMovieCredits(movieId) {
 
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
-          {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `http://localhost:5000/api/tmdb/movies/${movieId}/credits`
         );
 
         if (!response.ok) {
@@ -56,7 +47,7 @@ export default function useMovieCredits(movieId) {
     return () => {
       cancelled = true;
     };
-  }, [movieId, token]);
+  }, [movieId]);
 
   return { credits, creditsLoading, creditsError };
 }

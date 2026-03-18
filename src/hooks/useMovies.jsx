@@ -6,8 +6,6 @@ export default function useMovies(page, searchQuery = "") {
   const [isError, setIsError] = useState(null);
   const [totalPage, setTotalPage] = useState(0);
 
-  const token = import.meta.env.VITE_TMDB_TOKEN;
-
   useEffect(() => {
     let cancelled = false;
 
@@ -18,19 +16,11 @@ export default function useMovies(page, searchQuery = "") {
       try {
         const trimmedQuery = searchQuery.trim();
 
-        const url = trimmedQuery
-          ? `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(
-              trimmedQuery
-            )}&include_adult=false&language=en-US&page=${page}`
-          : `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`;
+        const url = `http://localhost:5000/api/tmdb/movies?page=${page}&searchQuery=${encodeURIComponent(
+          trimmedQuery
+        )}`;
 
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -41,7 +31,7 @@ export default function useMovies(page, searchQuery = "") {
         if (cancelled) return;
 
         setData(res.results || []);
-       setTotalPage(Math.min(res.total_pages || 0, 500));
+        setTotalPage(res.total_pages || 0);
       } catch (error) {
         if (!cancelled) {
           setIsError(error);
@@ -56,7 +46,7 @@ export default function useMovies(page, searchQuery = "") {
     return () => {
       cancelled = true;
     };
-  }, [page, searchQuery, token]);
+  }, [page, searchQuery]);
 
   return { data, isLoading, totalPage, isError };
 }

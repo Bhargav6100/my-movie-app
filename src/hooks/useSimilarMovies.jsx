@@ -5,8 +5,6 @@ export default function useSimilarMovies(movieId) {
   const [similarLoading, setSimilarLoading] = useState(false);
   const [similarError, setSimilarError] = useState(null);
 
-  const token = import.meta.env.VITE_TMDB_TOKEN;
-
   useEffect(() => {
     if (!movieId) {
       setSimilarMovies([]);
@@ -21,14 +19,7 @@ export default function useSimilarMovies(movieId) {
 
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/similar?language=en-US&page=1`,
-          {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `http://localhost:5000/api/tmdb/movies/${movieId}/similar`
         );
 
         if (!response.ok) {
@@ -56,7 +47,7 @@ export default function useSimilarMovies(movieId) {
     return () => {
       cancelled = true;
     };
-  }, [movieId, token]);
+  }, [movieId]);
 
   return { similarMovies, similarLoading, similarError };
 }

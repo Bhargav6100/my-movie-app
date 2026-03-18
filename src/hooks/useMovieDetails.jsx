@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-//for fetching extra details for modal based on movieID
+
 export default function useMovieDetails(movieId) {
   const [movieDetails, setMovieDetails] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState(null);
-
-  const token = import.meta.env.VITE_TMDB_TOKEN;
 
   useEffect(() => {
     if (!movieId) {
@@ -21,14 +19,7 @@ export default function useMovieDetails(movieId) {
 
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-          {
-            method: "GET",
-            headers: {
-              accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `http://localhost:5000/api/tmdb/movies/${movieId}`
         );
 
         if (!response.ok) {
@@ -55,7 +46,7 @@ export default function useMovieDetails(movieId) {
     return () => {
       cancelled = true;
     };
-  }, [movieId, token]);
+  }, [movieId]);
 
   return { movieDetails, detailsLoading, detailsError };
 }
