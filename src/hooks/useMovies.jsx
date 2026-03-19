@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-
+import { API_BASE_URL } from "../config/app";
 export default function useMovies(page, searchQuery = "") {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const [totalPage, setTotalPage] = useState(0);
+  
 
   useEffect(() => {
     let cancelled = false;
@@ -16,7 +17,7 @@ export default function useMovies(page, searchQuery = "") {
       try {
         const trimmedQuery = searchQuery.trim();
 
-        const url = `http://localhost:5000/api/tmdb/movies?page=${page}&searchQuery=${encodeURIComponent(
+        const url = `${API_BASE_URL}/api/tmdb/movies?page=${page}&searchQuery=${encodeURIComponent(
           trimmedQuery
         )}`;
 

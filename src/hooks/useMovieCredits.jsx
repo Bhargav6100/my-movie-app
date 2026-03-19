@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../config/app";
 
 export default function useMovieCredits(movieId) {
   const [credits, setCredits] = useState(null);
@@ -19,7 +20,7 @@ export default function useMovieCredits(movieId) {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/tmdb/movies/${movieId}/credits`
+          `${API_BASE_URL}/api/tmdb/movies/${movieId}/credits`
         );
 
         if (!response.ok) {

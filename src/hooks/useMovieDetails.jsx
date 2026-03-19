@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../config/app";
 
 export default function useMovieDetails(movieId) {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -19,7 +20,7 @@ export default function useMovieDetails(movieId) {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/tmdb/movies/${movieId}`
+          `${API_BASE_URL}/api/tmdb/movies/${movieId}`
         );
 
         if (!response.ok) {

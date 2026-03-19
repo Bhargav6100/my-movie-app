@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { API_BASE_URL } from "../config/app";
 export default function useSimilarMovies(movieId) {
   const [similarMovies, setSimilarMovies] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(false);
@@ -19,7 +19,7 @@ export default function useSimilarMovies(movieId) {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/tmdb/movies/${movieId}/similar`
+          `${API_BASE_URL}/api/tmdb/movies/${movieId}/similar`
         );
 
         if (!response.ok) {
