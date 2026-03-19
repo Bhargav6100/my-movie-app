@@ -32,8 +32,8 @@ export default function AuthModal({ mode, onClose, setMode }) {
 
     try {
       const endpoint = isLogin
-        ? `${API_BASE_URL}/auth/login`
-        : `${API_BASE_URL}/auth/register`;
+        ? `${API_BASE_URL}/api/auth/login`
+        : `${API_BASE_URL}/api/auth/register`;
 
       const payload = isLogin
         ? {

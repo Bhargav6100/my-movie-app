@@ -34,7 +34,7 @@ export const WatchListProvider = ({ children }) => {
       if (!isLoggedIn || !token) return;
 
       try {
-        const res = await fetch(`${API_BASE_URL}/users/watchlist`, {
+        const res = await fetch(`${API_BASE_URL}/api/users/watchlist`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -77,7 +77,7 @@ export const WatchListProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/users/watchlist`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/watchlist`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export const WatchListProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/users/watchlist/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/watchlist/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -31,7 +31,7 @@ export const FavouriteProvider = ({ children }) => {
     const fetchFavorites = async ()=>{
     if(!isLoggedIn || !token) return;
     try{
-      const res = await fetch(`${API_BASE_URL}/users/favorites`,{
+      const res = await fetch(`${API_BASE_URL}/api/users/favorites`,{
          headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -69,7 +69,7 @@ export const FavouriteProvider = ({ children }) => {
     });
   };
     try{
-      const res = await fetch(`${API_BASE_URL}/users/favorites`,{
+      const res = await fetch(`${API_BASE_URL}/api/users/favorites`,{
         method:"POST",
         headers:{
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export const FavouriteProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/users/favorites/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/favorites/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
