@@ -2,7 +2,7 @@ import { createContext, useState,useContext,useMemo, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 export const FavouriteContext = createContext(null);
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
 
 export const FavouriteProvider = ({ children }) => {
   const { token, isLoggedIn } = useContext(AuthContext);

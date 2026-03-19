@@ -2,7 +2,7 @@ import { useState,useContext } from "react";
 import {AuthContext} from "../Context/AuthContext";
 import styles from "./AuthModal.module.css";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
 
 export default function AuthModal({ mode, onClose, setMode }) {
   const { login } = useContext(AuthContext);

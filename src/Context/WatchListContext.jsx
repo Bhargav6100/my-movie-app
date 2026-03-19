@@ -3,7 +3,7 @@ import { AuthContext } from "./AuthContext";
 
 export const WatchlistContext = createContext(null);
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
 
 export const WatchListProvider = ({ children }) => {
   const { token, isLoggedIn } = useContext(AuthContext);
