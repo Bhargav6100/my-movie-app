@@ -13,7 +13,7 @@ const searchMovies = async (req, res) => {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${process.env.VITE_TMDB_TOKEN}`,
+        Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
       },
     });
 
@@ -43,7 +43,7 @@ const getMovieVideos = async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.VITE_TMDB_TOKEN}`,
+          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
         },
       }
     );
@@ -73,7 +73,7 @@ const getMovieDetails = async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.VITE_TMDB_TOKEN}`,
+          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
         },
       }
     );
@@ -102,7 +102,7 @@ const getMovieCredits = async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.VITE_TMDB_TOKEN}`,
+          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
         },
       }
     );
@@ -131,7 +131,7 @@ const getSimilarMovies = async (req, res) => {
         method: "GET",
         headers: {
           accept: "application/json",
-          Authorization: `Bearer ${process.env.VITE_TMDB_TOKEN}`,
+          Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
         },
       }
     );
