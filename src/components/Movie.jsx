@@ -2,6 +2,7 @@ import styles from "./Movie.module.css";
 import { FavouriteContext } from "../Context/FavouriteContext";
 import { WatchlistContext } from "../Context/WatchListContext";
 import { MovieContext } from "../Context/MovieContext";
+import { AuthContext } from "../Context/AuthContext";
 import { useContext } from "react";
 
 export default function Movie({
@@ -25,6 +26,7 @@ export default function Movie({
   } = useContext(WatchlistContext);
 
   const { openMovieDetails } = useContext(MovieContext);
+  const { isLoggedIn } = useContext(AuthContext);
 
   const movieData = {
     id,
@@ -34,6 +36,28 @@ export default function Movie({
     release_date: releaseDate,
     vote_average: rating,
     original_language: language,
+  };
+
+  const handleAddToFavs = async (e) => {
+    e.stopPropagation();
+
+    if (!isLoggedIn) {
+      alert("Please log in to add movies to favorites.");
+      return;
+    }
+
+    await addToFavorite(movieData);
+  };
+
+  const handleAddToWatchlist = async (e) => {
+    e.stopPropagation();
+
+    if (!isLoggedIn) {
+      alert("Please log in to add movies to your watchlist.");
+      return;
+    }
+
+    await addToWatchlist(movieData);
   };
 
   return (
@@ -55,13 +79,7 @@ export default function Movie({
         {!displayFavMovies && !displayWatchlistMovies && (
           <>
             {!isFavorite ? (
-              <button
-                className={styles.favBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addToFavorite(movieData);
-                }}
-              >
+              <button className={styles.favBtn} onClick={handleAddToFavs}>
                 Add to Favs
               </button>
             ) : (
@@ -71,10 +89,7 @@ export default function Movie({
             {!isInWatchlist ? (
               <button
                 className={styles.watchlistBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addToWatchlist(movieData);
-                }}
+                onClick={handleAddToWatchlist}
               >
                 Add to Watchlist
               </button>

@@ -1,37 +1,21 @@
-import { createContext, useState,useContext,useMemo, useEffect } from "react";
+import { createContext, useState, useContext, useMemo, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import { API_BASE_URL } from "../config/app";
 
 export const WatchlistContext = createContext(null);
-
-const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
 
 export const WatchListProvider = ({ children }) => {
   const { token, isLoggedIn } = useContext(AuthContext);
   const [displayWatchlistMovies, setDisplayWatchlistMovies] = useState(false);
-
-  const [watchlistMovies, setWatchlistMovies] = useState(() => {
-    try {
-      const storedList = localStorage.getItem("watchlistMovies");
-      return storedList ? JSON.parse(storedList) : [];
-    } catch (error) {
-      console.error("Failed to parse watchlist from localStorage:", error);
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      try {
-        localStorage.setItem("watchlistMovies", JSON.stringify(watchlistMovies));
-      } catch (error) {
-        console.error("Failed to save watchlist:", error);
-      }
-    }
-  }, [watchlistMovies, isLoggedIn]);
+  const [watchlistMovies, setWatchlistMovies] = useState([]);
 
   useEffect(() => {
     const fetchWatchlist = async () => {
-      if (!isLoggedIn || !token) return;
+      if (!isLoggedIn || !token) {
+        setWatchlistMovies([]);
+        setDisplayWatchlistMovies(false);
+        return;
+      }
 
       try {
         const res = await fetch(`${API_BASE_URL}/api/users/watchlist`, {
@@ -59,6 +43,7 @@ export const WatchListProvider = ({ children }) => {
         setWatchlistMovies(mappedMovies);
       } catch (error) {
         console.error("Failed to fetch watchlist:", error);
+        setWatchlistMovies([]);
       }
     };
 
@@ -66,15 +51,7 @@ export const WatchListProvider = ({ children }) => {
   }, [isLoggedIn, token]);
 
   const addToWatchlist = async (movie) => {
-    if (!movie) return;
-
-    if (!isLoggedIn || !token) {
-      setWatchlistMovies((prev) => {
-        if (prev.some((m) => m.id === movie.id)) return prev;
-        return [...prev, movie];
-      });
-      return;
-    }
+    if (!movie || !isLoggedIn || !token) return false;
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/watchlist`, {
@@ -111,16 +88,15 @@ export const WatchListProvider = ({ children }) => {
       }));
 
       setWatchlistMovies(mappedMovies);
+      return true;
     } catch (error) {
       console.error("Failed to add watchlist movie:", error);
+      return false;
     }
   };
 
   const removeFromWatchlist = async (id) => {
-    if (!isLoggedIn || !token) {
-      setWatchlistMovies((prev) => prev.filter((movie) => movie.id !== id));
-      return;
-    }
+    if (!isLoggedIn || !token) return false;
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/watchlist/${id}`, {
@@ -147,8 +123,10 @@ export const WatchListProvider = ({ children }) => {
       }));
 
       setWatchlistMovies(mappedMovies);
+      return true;
     } catch (error) {
       console.error("Failed to remove watchlist movie:", error);
+      return false;
     }
   };
 

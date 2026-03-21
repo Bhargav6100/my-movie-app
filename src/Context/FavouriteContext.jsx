@@ -1,48 +1,36 @@
-import { createContext, useState,useContext,useMemo, useEffect } from "react";
+import { createContext, useState, useContext, useMemo, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-export const FavouriteContext = createContext(null);
+import { API_BASE_URL } from "../config/app";
 
-const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
+export const FavouriteContext = createContext(null);
 
 export const FavouriteProvider = ({ children }) => {
   const { token, isLoggedIn } = useContext(AuthContext);
   const [displayFavMovies, setDisplayFavMovies] = useState(false);
-  const [favoriteMovies, setFavoriteMovies] = useState(() => {
-    try {
-      const storedFavorites = localStorage.getItem("favoriteMovies");
-      return storedFavorites ? JSON.parse(storedFavorites) : [];
-    } catch (error) {
-      console.error("Failed to parse favorites from localStorage:", error);
-      return [];
-    }
-  });
+  const [favoriteMovies, setFavoriteMovies] = useState([]);
 
   useEffect(() => {
-   if(!isLoggedIn){ 
-    try {
-      localStorage.setItem("favoriteMovies", JSON.stringify(favoriteMovies));
-    } catch (error) {
-      console.error("Failed to save favorites:", error);
-    }
-   }
-  }, [favoriteMovies,isLoggedIn]);
+    const fetchFavorites = async () => {
+      if (!isLoggedIn || !token) {
+        setFavoriteMovies([]);
+        setDisplayFavMovies(false);
+        return;
+      }
 
-  useEffect(()=>{
-    const fetchFavorites = async ()=>{
-    if(!isLoggedIn || !token) return;
-    try{
-      const res = await fetch(`${API_BASE_URL}/api/users/favorites`,{
-         headers: {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/users/favorites`, {
+          headers: {
             Authorization: `Bearer ${token}`,
           },
-      })
-      if (!res.ok) {
+        });
+
+        if (!res.ok) {
           throw new Error("Failed to fetch favorites");
         }
-      
+
         const data = await res.json();
-        
-          const mappedMovies = data.map((movie) => ({
+
+        const mappedMovies = data.map((movie) => ({
           id: movie.movieId,
           title: movie.title,
           poster_path: movie.poster_path,
@@ -51,31 +39,28 @@ export const FavouriteProvider = ({ children }) => {
           release_date: movie.release_date,
           overview: movie.overview,
         }));
-         setFavoriteMovies(mappedMovies); 
-      }
-      catch(error){
-       console.error("Failed to fetch favorites:", error);  
+
+        setFavoriteMovies(mappedMovies);
+      } catch (error) {
+        console.error("Failed to fetch favorites:", error);
+        setFavoriteMovies([]);
       }
     };
-      fetchFavorites();
-  },[isLoggedIn,token]);
+
+    fetchFavorites();
+  }, [isLoggedIn, token]);
 
   const addToFavorite = async (movie) => {
-    if(!movie) return;
-    if(!isLoggedIn || !token){
-    setFavoriteMovies((prev) => {
-      if (prev.some((m) => m.id === movie.id)) return prev;
-      return [...prev, movie];
-    });
-  };
-    try{
-      const res = await fetch(`${API_BASE_URL}/api/users/favorites`,{
-        method:"POST",
-        headers:{
+    if (!movie || !isLoggedIn || !token) return false;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/users/favorites`, {
+        method: "POST",
+        headers: {
           "Content-Type": "application/json",
-           Authorization : `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-         body: JSON.stringify({
+        body: JSON.stringify({
           movieId: movie.id,
           title: movie.title,
           poster_path: movie.poster_path,
@@ -84,10 +69,12 @@ export const FavouriteProvider = ({ children }) => {
           release_date: movie.release_date,
           overview: movie.overview,
         }),
-     }) 
-      if(!res.ok){
-        throw new Error ("Failed to add favorite");
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to add favorite");
       }
+
       const data = await res.json();
 
       const mappedMovies = data.map((item) => ({
@@ -101,17 +88,15 @@ export const FavouriteProvider = ({ children }) => {
       }));
 
       setFavoriteMovies(mappedMovies);
+      return true;
+    } catch (error) {
+      console.error("Failed to add favorite:", error);
+      return false;
     }
-    catch(error){
-       console.error("Failed to add favorite:", error);
-    }
-  }
+  };
 
   const removeFromFavs = async (id) => {
-    if (!isLoggedIn || !token) {
-      setFavoriteMovies((prev) => prev.filter((movie) => movie.id !== id));
-      return;
-    }
+    if (!isLoggedIn || !token) return false;
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/favorites/${id}`, {
@@ -138,8 +123,10 @@ export const FavouriteProvider = ({ children }) => {
       }));
 
       setFavoriteMovies(mappedMovies);
+      return true;
     } catch (error) {
       console.error("Failed to remove favorite:", error);
+      return false;
     }
   };
 

@@ -5,7 +5,7 @@ import SortSelector from "./SortSelector";
 import AuthModal from "./AuthModal";
 import { FavouriteContext } from "../Context/FavouriteContext";
 import { WatchlistContext } from "../Context/WatchListContext";
-import {AuthContext} from "../Context/AuthContext";
+import { AuthContext } from "../Context/AuthContext";
 import { useContext, useState } from "react";
 
 export default function Header() {
@@ -50,7 +50,9 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    logout();
+     displayAll();
+     hideWatchlist();
+     logout();
   };
 
   return (
@@ -64,21 +66,25 @@ export default function Header() {
         </div>
 
         <div className={styles.actions}>
-          <button
-            className={`${styles.btn} ${displayFavMovies ? styles.active : ""}`}
-            onClick={showFavorites}
-          >
-            ❤️ Fav Movies
-          </button>
+          {isLoggedIn && (
+            <>
+              <button
+                className={`${styles.btn} ${displayFavMovies ? styles.active : ""}`}
+                onClick={showFavorites}
+              >
+                ❤️ Fav Movies
+              </button>
 
-          <button
-            className={`${styles.btn} ${
-              displayWatchlistMovies ? styles.active : ""
-            }`}
-            onClick={showWatchlist}
-          >
-            📌 Watchlist
-          </button>
+              <button
+                className={`${styles.btn} ${
+                  displayWatchlistMovies ? styles.active : ""
+                }`}
+                onClick={showWatchlist}
+              >
+                📌 Watchlist
+              </button>
+            </>
+          )}
 
           <button
             className={`${styles.btn} ${
@@ -94,7 +100,10 @@ export default function Header() {
               <button className={styles.authBtn} onClick={openLoginModal}>
                 Login
               </button>
-              <button className={styles.authBtnSecondary} onClick={openRegisterModal}>
+              <button
+                className={styles.authBtnSecondary}
+                onClick={openRegisterModal}
+              >
                 Register
               </button>
             </>
