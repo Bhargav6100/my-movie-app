@@ -124,10 +124,11 @@ const getUserProfile = async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 const forgotPassword = async (req, res) => {
-console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
-console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("Incoming email:", req.body.email);
+  console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
+  console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
+  console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+  console.log("Incoming email:", req.body.email);
+
   try {
     const { email } = req.body;
 
@@ -145,10 +146,7 @@ console.log("Incoming email:", req.body.email);
         message: "If an account exists, a reset link has been sent",
       });
     }
-    
-      console.log("Reset URL:", resetUrl);
-      console.log("Mail sent:", info.response);
-      console.log("Mail messageId:", info.messageId);
+
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     const hashedToken = crypto
@@ -163,7 +161,9 @@ console.log("Incoming email:", req.body.email);
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    await transporter.sendMail({
+    console.log("Reset URL:", resetUrl);
+
+    const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: user.email,
       subject: "Password Reset Request",
@@ -174,9 +174,10 @@ console.log("Incoming email:", req.body.email);
         <p>This link will expire in 15 minutes.</p>
       `,
     });
-     console.log("Reset URL:", resetUrl);
-     console.log("Mail sent:", info.response);
-     console.log("Mail messageId:", info.messageId);
+
+    console.log("Mail sent:", info.response);
+    console.log("Mail messageId:", info.messageId);
+
     return res.status(200).json({
       message: "If an account exists, a reset link has been sent",
     });
@@ -187,7 +188,6 @@ console.log("Incoming email:", req.body.email);
     });
   }
 };
-
 // @desc    Reset password
 // @route   POST /api/auth/reset-password/:token
 // @access  Public
