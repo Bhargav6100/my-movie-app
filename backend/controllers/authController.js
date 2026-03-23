@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 // helper function to generate JWT
 const generateToken = (id) => {
@@ -11,13 +11,7 @@ const generateToken = (id) => {
   });
 };
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -124,10 +118,6 @@ const getUserProfile = async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 const forgotPassword = async (req, res) => {
-  console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
-  console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
-  console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-  console.log("Incoming email:", req.body.email);
 
   try {
     const { email } = req.body;
@@ -161,10 +151,9 @@ const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    console.log("Reset URL:", resetUrl);
 
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
       to: user.email,
       subject: "Password Reset Request",
       html: `
@@ -175,8 +164,19 @@ const forgotPassword = async (req, res) => {
       `,
     });
 
-    console.log("Mail sent:", info.response);
-    console.log("Mail messageId:", info.messageId);
+    if (error) {
+      console.log("Resend error:", error);
+
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      return res.status(500).json({
+        message: "Failed to send reset email",
+      });
+    }
+
+    console.log("resend email sent:", data);
 
     return res.status(200).json({
       message: "If an account exists, a reset link has been sent",
@@ -188,6 +188,7 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
+
 // @desc    Reset password
 // @route   POST /api/auth/reset-password/:token
 // @access  Public
@@ -250,6 +251,7 @@ const resetPassword = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   registerUser,
   loginUser,
@@ -257,5 +259,3 @@ module.exports = {
   forgotPassword,
   resetPassword,
 };
-
-

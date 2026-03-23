@@ -7,7 +7,6 @@ import styles from "./AuthModal.module.css";
 export default function AuthModal({ mode, onClose, setMode }) {
   const { login } = useContext(AuthContext);
 
-  console.log("API_BASE_URL:", API_BASE_URL);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -69,15 +68,8 @@ export default function AuthModal({ mode, onClose, setMode }) {
         },
         body: JSON.stringify(payload),
       });
-
-      const text = await res.text();
-
-       let data;
-       try {
-        data = JSON.parse(text);
-       } catch {
-        throw new Error(`Non-JSON response from server: ${res.status}`);
-       }
+      
+      const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.message || "Something went wrong");
@@ -107,15 +99,7 @@ export default function AuthModal({ mode, onClose, setMode }) {
         body: JSON.stringify({ email: formData.email }),
       });
  
-      const text = await res.text();
-
-      let data;
-      try{
-        data = json.parse(text);
-      }
-      catch{
-         throw new Error(`Non json response from server: ${res.status}`);
-      }
+      const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.message || "Failed to send reset link");
