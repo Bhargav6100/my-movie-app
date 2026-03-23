@@ -174,7 +174,9 @@ console.log("Incoming email:", req.body.email);
         <p>This link will expire in 15 minutes.</p>
       `,
     });
-
+     console.log("Reset URL:", resetUrl);
+     console.log("Mail sent:", info.response);
+     console.log("Mail messageId:", info.messageId);
     return res.status(200).json({
       message: "If an account exists, a reset link has been sent",
     });
