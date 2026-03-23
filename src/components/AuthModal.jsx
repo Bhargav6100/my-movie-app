@@ -1,8 +1,8 @@
-import { useState,useContext } from "react";
-import {AuthContext} from "../Context/AuthContext";
+import { useState, useContext } from "react";
+import { AuthContext } from "../Context/AuthContext";
+import { API_BASE_URL } from "../config/app";
+import PasswordInput from "./PasswordInput";
 import styles from "./AuthModal.module.css";
-
-const API_BASE_URL = "https://my-movie-app-imu7.onrender.com";
 
 export default function AuthModal({ mode, onClose, setMode }) {
   const { login } = useContext(AuthContext);
@@ -13,21 +13,35 @@ export default function AuthModal({ mode, onClose, setMode }) {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const isLogin = mode === "login";
+  const isRegister = mode === "register";
+  const isForgotPassword = mode === "forgotPassword";
 
   const handleChange = (e) => {
+    setError("");
+    setSuccess("");
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const switchMode = (nextMode) => {
+    setError("");
+    setSuccess("");
+    setShowPassword(false);
+    setMode(nextMode);
+  };
+
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -40,7 +54,11 @@ export default function AuthModal({ mode, onClose, setMode }) {
             email: formData.email,
             password: formData.password,
           }
-        : formData;
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          };
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -65,6 +83,35 @@ export default function AuthModal({ mode, onClose, setMode }) {
     }
   };
 
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send reset link");
+      }
+
+      setSuccess(data.message || "Reset link sent");
+    } catch (err) {
+      setError(err.message || "Failed to send reset link");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -72,10 +119,19 @@ export default function AuthModal({ mode, onClose, setMode }) {
           ×
         </button>
 
-        <h2 className={styles.title}>{isLogin ? "Login" : "Register"}</h2>
+        <h2 className={styles.title}>
+          {isLogin
+            ? "Login"
+            : isRegister
+            ? "Register"
+            : "Forgot Password"}
+        </h2>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          {!isLogin && (
+        <form
+          className={styles.form}
+          onSubmit={isForgotPassword ? handleForgotPasswordSubmit : handleAuthSubmit}
+        >
+          {isRegister && (
             <input
               className={styles.input}
               type="text"
@@ -97,35 +153,60 @@ export default function AuthModal({ mode, onClose, setMode }) {
             required
           />
 
-          <input
-            className={styles.input}
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          {!isForgotPassword && (
+            <PasswordInput
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+            />
+          )}
 
           {error && <p className={styles.error}>{error}</p>}
+          {success && <p className={styles.success}>{success}</p>}
 
           <button className={styles.submitBtn} type="submit" disabled={loading}>
             {loading
               ? isLogin
                 ? "Logging in..."
-                : "Registering..."
+                : isRegister
+                ? "Registering..."
+                : "Sending..."
               : isLogin
               ? "Login"
-              : "Register"}
+              : isRegister
+              ? "Register"
+              : "Send Reset Link"}
           </button>
         </form>
 
+        {isLogin && (
+          <p className={styles.switchText}>
+            <button
+              type="button"
+              className={styles.switchBtn}
+              onClick={() => switchMode("forgotPassword")}
+            >
+              Forgot Password?
+            </button>
+          </p>
+        )}
+
         <p className={styles.switchText}>
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          {isLogin
+            ? "Don't have an account?"
+            : isRegister
+            ? "Already have an account?"
+            : "Remembered your password?"}{" "}
           <button
             type="button"
             className={styles.switchBtn}
-            onClick={() => setMode(isLogin ? "register" : "login")}
+            onClick={() =>
+              switchMode(isLogin ? "register" : isRegister ? "login" : "login")
+            }
           >
             {isLogin ? "Register" : "Login"}
           </button>
