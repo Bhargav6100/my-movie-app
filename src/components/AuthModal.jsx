@@ -7,6 +7,8 @@ import styles from "./AuthModal.module.css";
 export default function AuthModal({ mode, onClose, setMode }) {
   const { login } = useContext(AuthContext);
 
+  console.log("API_BASE_URL:", API_BASE_URL);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
