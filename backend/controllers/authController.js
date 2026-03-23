@@ -124,6 +124,10 @@ const getUserProfile = async (req, res) => {
 // @route   POST /api/auth/forgot-password
 // @access  Public
 const forgotPassword = async (req, res) => {
+console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
+console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+console.log("Recipient email:", user?.email);
   try {
     const { email } = req.body;
 
