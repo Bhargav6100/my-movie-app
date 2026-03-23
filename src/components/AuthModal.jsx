@@ -70,7 +70,14 @@ export default function AuthModal({ mode, onClose, setMode }) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+
+       let data;
+       try {
+        data = JSON.parse(text);
+       } catch {
+        throw new Error(`Non-JSON response from server: ${res.status}`);
+       }
 
       if (!res.ok) {
         throw new Error(data.message || "Something went wrong");
@@ -99,8 +106,16 @@ export default function AuthModal({ mode, onClose, setMode }) {
         },
         body: JSON.stringify({ email: formData.email }),
       });
+ 
+      const text = await res.text();
 
-      const data = await res.json();
+      let data;
+      try{
+        data = json.parse(text);
+      }
+      catch{
+         throw new Error(`Non json response from server: ${res.status}`);
+      }
 
       if (!res.ok) {
         throw new Error(data.message || "Failed to send reset link");

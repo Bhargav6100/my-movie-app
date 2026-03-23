@@ -127,7 +127,7 @@ const forgotPassword = async (req, res) => {
 console.log("EMAIL_USER exists:", !!process.env.EMAIL_USER);
 console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
 console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("Recipient email:", user?.email);
+console.log("Incoming email:", req.body.email);
   try {
     const { email } = req.body;
 
@@ -145,7 +145,10 @@ console.log("Recipient email:", user?.email);
         message: "If an account exists, a reset link has been sent",
       });
     }
-
+    
+      console.log("Reset URL:", resetUrl);
+      console.log("Mail sent:", info.response);
+      console.log("Mail messageId:", info.messageId);
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     const hashedToken = crypto
@@ -176,6 +179,7 @@ console.log("Recipient email:", user?.email);
       message: "If an account exists, a reset link has been sent",
     });
   } catch (error) {
+    console.log("Forgot password production error:", error);
     return res.status(500).json({
       message: error.message,
     });
