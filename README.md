@@ -86,7 +86,7 @@ VITE_API_BASE_URL=your_backend_base_url
 
 1. Clone the repo
 
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/Bhargav6100/my-movie-app
 cd your-repo-name
 
 2. Install Frontend dependencies
