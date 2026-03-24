@@ -1,4 +1,4 @@
-# Cinevalut - Full Stack Movie Browsing App
+# Cinevault - Full Stack Movie Browsing App
 
 A full-stack movie browsing application built with **React, Node.js, Express, and MongoDB**.  
 Users can browse and search movies, explore detailed movie information, manage favorites and watchlists, and use secure authentication features including **signup, login, and forgot/reset password**.
