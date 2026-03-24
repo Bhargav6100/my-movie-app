@@ -1,42 +1,52 @@
-/* .selectWrapper {
+.selectWrapper {
   position: relative;
+  display: inline-block;
 }
 
 .genreSelect {
   appearance: none;
-  padding: 10px 44px 10px 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 
-  background: #141414;
-  color: #fff;
+  background: rgba(20, 20, 20, 0.95);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
 
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-
-  font-size: 14px;
+  padding: 0.8rem 2.8rem 0.8rem 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
-
   cursor: pointer;
-  outline: none;
 
-  transition: all 0.3s ease;
+  outline: none;
+  min-width: 180px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 .genreSelect:hover {
-  border-color: #ff0055;
+  border-color: rgba(255, 0, 85, 0.5);
+  background: rgba(28, 28, 28, 0.98);
 }
 
 .genreSelect:focus {
   border-color: #ff0055;
-  box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.35);
+  box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.15);
+}
+
+.genreSelect option {
+  background: #181818;
+  color: #ffffff;
 }
 
 /* Custom arrow */
 .selectWrapper::after {
   content: "▾";
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: #ff0055;
+  font-size: 0.9rem;
   pointer-events: none;
 }
