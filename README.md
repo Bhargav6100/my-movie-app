@@ -122,32 +122,32 @@ Password reset emails are handled through Resend
 
 This project helped me strengthen my skills beyond frontend development and gain hands-on experience with full-stack development, including:
 
-• Building and connecting frontend and backend systems
-• Implementing JWT-based authentication
-• Working with MongoDB and Mongoose
-• Integrating third-party APIs
-• Handling forgot/reset password flows securely
-• Deploying frontend and backend applications to production
-• Debugging real-world issues related to routing, email delivery, and environment configuration
+- Building and connecting frontend and backend systems
+- Implementing JWT-based authentication
+- Working with MongoDB and Mongoose
+- Integrating third-party APIs
+- Handling forgot/reset password flows securely
+- Deploying frontend and backend applications to production
+- Debugging real-world issues related to routing, email delivery, and environment configuration
 
 ## Challenges solved
 
 Some of the practical challenges I worked through during this project:
 
-• Migrating from Nodemailer to Resend for password reset emails
-• Fixing production routing issues for reset-password links
-• Managing environment variables across local and production environments
-• Handling frontend/backend integration cleanly with deployed services
-• Implementing secure token-based password reset flow
+- Migrating from Nodemailer to Resend for password reset emails
+- Fixing production routing issues for reset-password links
+- Managing environment variables across local and production environments
+- Handling frontend/backend integration cleanly with deployed services
+- Implementing secure token-based password reset flow
 
 ## Future Improvements
 
-• Improve mobile responsiveness
-• Add email verification during signup
-• Add profile management
-• Improve filtering and sorting options
-• Enhance UI/UX polish and accessibility
-• Add better loading states and error handling
+- Improve mobile responsiveness
+- Add email verification during signup
+- Add profile management
+- Improve filtering and sorting options
+- Enhance UI/UX polish and accessibility
+- Add better loading states and error handling
 
 ## Author
 
